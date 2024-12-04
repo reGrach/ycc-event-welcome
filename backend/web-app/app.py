@@ -1,9 +1,12 @@
+import sys
+sys.path.append('backend')
+
 from flask import Flask
 from flask import render_template
-from services import recognize_service
+from recognizer import recognize_service as rs
 
 app = Flask(__name__)
-ser = recognize_service.recognize_service()
+rec_ser = rs.recognize_service()
 
 @app.route('/')
 def index():
@@ -11,8 +14,8 @@ def index():
 
 @app.route('/recognize', methods=['GET'])
 def recognize():  
-  return f'Hello, {ser.recognize(None)}'
+  return f'Hello, {rec_ser.recognize(None)}'
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=8080, ssl_context='adhoc')
