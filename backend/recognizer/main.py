@@ -1,11 +1,11 @@
-import torch
+import torch #импорт пакета торч, который отвечает за
 from facenet_pytorch import InceptionResnetV1, MTCNN
 from types import MethodType
 import cv2
 import os
 
 ### get encoded features for all saved images
-saved_pictures = "./known_img/"
+saved_pictures = "./known_img/" 
 all_people_faces = {}
 mtcnn= {}
 
@@ -71,12 +71,12 @@ def main():
             break
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": # это условие нужно
     ### load model
     resnet = InceptionResnetV1(pretrained='vggface2').eval()
     mtcnn = MTCNN(image_size=224, keep_all=True, thresholds=[0.4, 0.5, 0.5], min_face_size=60)
     mtcnn.detect_box = MethodType(detect_box, mtcnn)
     print ("start")
-    loadDataset()
-    main()
+    loadDataset() # вызов метода loadDataset
+    main()  # вызов метода loadDataset
     print ("finish")
