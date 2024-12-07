@@ -1,18 +1,17 @@
-(function () {
-  // The width and height of the captured photo. We will set the
-  // width to the value defined here, but the height will be
-  // calculated based on the aspect ratio of the input stream.
+(function() {
 
-  var width = 320;    // We will scale the photo width to this
-  var height = 0;     // This will be computed based on the input stream
+  //Ширина и высота снимка. Мы установим ширину на значение, 
+  //но высота будет вычисляться на основе отношения потока.
 
-  // |streaming| indicates whether or not we're currently streaming
-  // video from the camera. Obviously, we start at false.
+  var width = 320;    // Мы будем масштабировать ширину фотографии до этого.
+  var height = 0;     // Это будет вычисляться на основе входящего потока
+
+  //|streaming| указывает, передаём ли мы видео из камеры. Очевидно, что мы начинаем с false.
 
   var streaming = false;
 
-  // The various HTML elements we need to configure or control. These
-  // will be set by the startup() function.
+  //Различные элементы HTML, которые нам нужно настроить или контролировать.
+  // Они будут установлены функцией startup().
 
   var video = null;
   var canvas = null;
@@ -25,26 +24,26 @@
     photo = document.getElementById('photo');
     startbutton = document.getElementById('startbutton');
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
-      .then(function (stream) {
-        video.srcObject = stream;
-        video.play();
-      })
-      .catch(function (err) {
-        console.log("An error occurred: " + err);
-      });
+    navigator.mediaDevices.getUserMedia({video: true, audio: false})
+    .then(function(stream) {
+      video.srcObject = stream;
+      video.play();
+    })
+    .catch(function(err) {
+      console.log("An error occurred: " + err);
+    });
 
-    video.addEventListener('canplay', function (ev) {
+    video.addEventListener('canplay', function(ev){
       if (!streaming) {
-        height = video.videoHeight / (video.videoWidth / width);
-
-        // Firefox currently has a bug where the height can't be read from
-        // the video, so we will make assumptions if this happens.
-
+        height = video.videoHeight / (video.videoWidth/width);
+      
+        // В Firefox в настоящее время есть ошибка, где высота не может быть прочитана из видео, 
+        // так что мы будем делать предположения, если это произойдет.
+      
         if (isNaN(height)) {
-          height = width / (4 / 3);
+          height = width / (4/3);
         }
-
+      
         video.setAttribute('width', width);
         video.setAttribute('height', height);
         canvas.setAttribute('width', width);
@@ -53,16 +52,16 @@
       }
     }, false);
 
-    startbutton.addEventListener('click', function (ev) {
+    startbutton.addEventListener('click', function(ev){
       takepicture();
       ev.preventDefault();
     }, false);
-
+    
+    
     clearphoto();
   }
 
-  // Fill the photo with an indication that none has been
-  // captured.
+  // Заполнить фотографию с указанием того, что ни одного снимка не было сделано.
 
   function clearphoto() {
     var context = canvas.getContext('2d');
@@ -72,12 +71,11 @@
     var data = canvas.toDataURL('image/png');
     photo.setAttribute('src', data);
   }
-
-  // Capture a photo by fetching the current contents of the video
-  // and drawing it into a canvas, then converting that to a PNG
-  // format data URL. By drawing it on an offscreen canvas and then
-  // drawing that to the screen, we can change its size and/or apply
-  // other changes before drawing it.
+  
+  // Захватите фотографию, заберя текущее содержимое видео и нарисуя его на canvas, 
+  // а затем преобразуя его в URL данных в формате PNG.
+  // Рисуя его на оффшорном canvas и затем рисуя его на экран,
+  // мы можем изменить его размер и/или применить другие изменения перед тем как нарисовать его.
 
   function takepicture() {
     var context = canvas.getContext('2d');
@@ -85,7 +83,7 @@
       canvas.width = width;
       canvas.height = height;
       context.drawImage(video, 0, 0, width, height);
-
+    
       var data = canvas.toDataURL('image/png');
       photo.setAttribute('src', data);
     } else {
@@ -93,7 +91,27 @@
     }
   }
 
-  // Set up our event listener to run the startup process
-  // once loading is complete.
-  window.addEventListener('load', startup, false);
+  // Настроить event Listener для запуска процесса старта после завершения загрузки.
+ window.addEventListener('load', startup, false);
+
+ function uploadImage() {
+  const imageFile = document.getElementById('imageInput').files[0]; // Получаем выбранный файл
+
+  const formData = new FormData();
+  formData.append('image', imageFile); // Добавляем файл в FormData
+
+  fetch('https://httpbin.org/#/', { // Замените на ваш URL
+      method: 'POST',
+      body: formData // Отправляем FormData
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Ошибка сети');
+      }
+      return response.json(); // Обрабатываем ответ
+  })
+  .then(data => console.log('Успех:', data)) // Успешный ответ
+  .catch(error => console.error('Ошибка:', error));
+}
+
 })();
