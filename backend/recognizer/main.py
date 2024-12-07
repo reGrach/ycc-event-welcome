@@ -1,30 +1,30 @@
-import torch #импорт пакета торч, который отвечает за
-from facenet_pytorch import InceptionResnetV1, MTCNN
-from types import MethodType
-import cv2
-import os
+import torch # Импортируем библиотеку Torch, которая используется для работы с тензорами и глубоким обучением.
+from facenet_pytorch import InceptionResnetV1, MTCNN # Импортируем модели InceptionResnetV1 и MTCNN из библиотеки facenet_pytorch для распознавания лиц.
+from types import MethodType # Импортируем MethodType для создания методов, которые могут быть привязаны к экземплярам классов.
+import cv2 # Импортируем библиотеку OpenCV для обработки изображений и видео.
+import os # Импортируем библиотеку os для работы с файловой системой.
 
-### get encoded features for all saved images
-saved_pictures = "./known_img/" 
-all_people_faces = {}
-mtcnn= {}
+### Получение закодированных признаков для всех сохраненных изображений.
+saved_pictures = "./known_img/" # Путь к каталогу с известными изображениями лиц.
+all_people_faces = {} # Словарь для хранения закодированных лиц каждого человека.
+mtcnn= {} # Словарь для хранения моделей MTCNN (которые будут использоваться для обнаружения лиц).
 
-### encoding image
-def encode(img):
-    res = resnet(torch.Tensor(img))
-    return res
+### Функция для кодирования изображения
+def encode(img):  # Объявляем функцию encode, которая принимает изображение в качестве аргумента.
+    res = resnet(torch.Tensor(img)) # Преобразуем изображение в тензор и передаем его в модель ResNet для получения закодированных признаков.
+    return res  # Возвращаем закодированные признаки.
 
-def detect_box(self, img, save_path=None):
-    # Detect faces
-    batch_boxes, batch_probs, batch_points = self.detect(img, landmarks=True)
-    # Select faces
-    if not self.keep_all:
-        batch_boxes, batch_probs, batch_points = self.select_boxes(
-            batch_boxes, batch_probs, batch_points, img, method=self.selection_method
+def detect_box(self, img, save_path=None):  # Объявляем метод для обнаружения лиц на изображении.
+    # Обнаруживаем лица
+    batch_boxes, batch_probs, batch_points = self.detect(img, landmarks=True)  # Обнаруживаем лица на изображении и получаем координаты ограничивающих рамок, вероятности и ключевые точки (например, глаза, нос).
+    # Выбираем лица
+    if not self.keep_all:  # Если не сохраняем все обнаруженные лица
+        batch_boxes, batch_probs, batch_points = self.select_boxes(  # Выбираем лица на основе заданного метода (например, выбор лиц с высокой вероятностью).
+            batch_boxes, batch_probs, batch_points, img, method=self.selection_method  # Передаем необходимые данные и метод выбора.
         )
-    # Extract faces
-    faces = self.extract(img, batch_boxes, save_path)
-    return batch_boxes, faces
+    # Извлекаем лица
+    faces = self.extract(img, batch_boxes, save_path)  # Извлекаем области лиц из изображения на основе ограничивающих рамок и сохраняем при необходимости.
+    return batch_boxes, faces  # Возвращаем ограничивающие рамки и извлеченные лица.
 
 ### load images
 def loadDataset():
