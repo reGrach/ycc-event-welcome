@@ -1,34 +1,38 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="ru" data-bs-theme="auto">
 
 <head>
-    <title>WebRTC: Still photo capture demo</title>
-    <meta charset='utf-8'>
-    <link rel="stylesheet" href="static/main.css" type="text/css" media="all">
-    <script src="static/capture.js">
-    </script>
+    <script src="static/bootstrap/js/color-modes.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Регистрация на мероприятие</title>
+
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/main.css" rel="stylesheet">
 </head>
 
 <body>
-    <div class="contentarea">
-        <h1>
-            MDN - WebRTC: Still photo capture demo
-        </h1>
-        <p>
-            Этот пример показывает, как настроить медиа-поток с помощью встроенной веб-камеры, получить изображение из
-            этого потока и создать PNG с использованием этого изображения.
-        </p>
-        <div class="camera">
-            <video id="video">Video stream not available.</video>
-            <button id="startbutton">Take photo</button>
+    <main class="form-signin w-100 m-auto my-4">
+        <video id="video" class="rounded mx-auto d-block" playsinline>Видеопоток недоступен</video>
+        <button id="send_button" class="btn btn-primary w-100 my-2" type="button">Отправить</button>
+        <canvas id="canvas"></canvas>
+        <div id="alert_err" hidden class="alert alert-warning" role="alert">
+            Не удалось Вас распознать! Попробуйте еще раз
         </div>
-        <canvas id="canvas">
-        </canvas>
-        <div class="output">
-            <img id="photo" alt="The screen capture will appear in this box.">
+        <div hidden id="res_card" class="card">
+            <img id="res_img" class="card-img-top">
+            <div class="card-body">
+                <h5 id="res_name" class="card-title"></h5>
+            </div>
+            <div class="card-footer">
+                <button id="clear_card" class="btn btn-primary" type="button">Очистить</button>
+            </div>
         </div>
-        
-    </div>
+    </main>
+    <script src="static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="static/app.js"></script>
 </body>
 
 </html>
