@@ -157,7 +157,7 @@ cython_debug/
 # MacOS
 .DS_Store
 
-photo_dataset
+photo_dataset/*
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

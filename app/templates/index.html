@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<video id="video" class="rounded mx-auto d-block" playsinline>Видеопоток недоступен</video>
+<button id="send_button" class="btn btn-primary w-100 my-2" type="button">Отправить</button>
+<canvas id="canvas"></canvas>
+<div id="alert_err" hidden class="alert alert-warning" role="alert">
+    Не удалось Вас распознать! Попробуйте еще раз
+</div>
+<div hidden id="res_card" class="card">
+    <img id="res_img" class="card-img-top">
+    <div class="card-body">
+        <h5 id="res_name" class="card-title"></h5>
+    </div>
+    <div class="card-footer">
+        <button id="clear_card" class="btn btn-primary" type="button">Очистить</button>
+    </div>
+</div>
+{% endblock %}

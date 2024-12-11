@@ -4,17 +4,17 @@ from facenet_pytorch import InceptionResnetV1, MTCNN
 from types import MethodType
 import cv2
 import os
+from config import Config
 
 
 class recognize_service:
-    __accuracy=0.7
-    saved_pictures = "./photo_dataset/"
     all_people_faces = {}
     mtcnn = {}
     resnet = {}
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, cnf: Config) -> None:
+        self.__threshold = cnf.THRESHOLD_REC
+        self.__photo_dir = cnf.PHOTO_DIR
 
     def __detect_box(self, self_mtcnn: MTCNN, img: Image, save_path=None):
         batch_boxes, batch_probs, batch_points = self_mtcnn.detect(img, landmarks=True) 
@@ -31,9 +31,9 @@ class recognize_service:
     
     ### load images
     def __loadDataset(self):
-        for filename in os.listdir(self.saved_pictures):
+        for filename in os.listdir(self.__photo_dir):
             person_face, extension = filename.split(".")
-            img = cv2.imread(f'{self.saved_pictures}/{person_face}.{extension}')
+            img = cv2.imread(f'{self.__photo_dir}/{person_face}.{extension}')
             cropped = self.mtcnn(img)
             if cropped is not None:
                 self.all_people_faces[person_face] = self.__encode(cropped)[0, :]
@@ -63,7 +63,7 @@ class recognize_service:
 
                 result_name = min(detect_dict, key=detect_dict.get)
 
-                if detect_dict[result_name] >= self.__accuracy:
+                if detect_dict[result_name] >= self.__threshold:
                     result_name = None
                 
         return result_name

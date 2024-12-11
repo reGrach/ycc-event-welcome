@@ -3,7 +3,7 @@ sys.path.append('backend')
 
 from PIL import Image
 from flask import Flask, render_template, jsonify, request
-from recognizer import recognize_service as rs
+from app import recognize_service as rs
 
 app = Flask(__name__)
 rec_ser = rs.recognize_service()
