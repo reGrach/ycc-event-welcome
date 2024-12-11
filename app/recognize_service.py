@@ -13,7 +13,7 @@ class recognize_service:
     resnet = {}
 
     def __init__(self, cnf: Config) -> None:
-        self.__threshold = cnf.THRESHOLD_REC
+        self.__threshold = float(cnf.THRESHOLD_REC)
         self.__photo_dir = cnf.PHOTO_DIR
 
     def __detect_box(self, self_mtcnn: MTCNN, img: Image, save_path=None):
