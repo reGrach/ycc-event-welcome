@@ -3,6 +3,7 @@ let height = 0;
 let streaming = false;
 
 const videoHtml = document.getElementById('video');
+const fullScreenBtnHtml = document.getElementById('full-screen-btn');
 const canvasHtml = document.getElementById('canvas');
 const recButtonHtml = document.getElementById('send_button');
 
@@ -23,6 +24,7 @@ navigator
 
 recButtonHtml.onclick = sendImage;
 clearCardHtml.onclick = clear;
+fullScreenBtnHtml.onclick = toggleFullScreen;
 
 videoHtml.addEventListener('canplay', function (ev) {
     if (!streaming) {
@@ -83,5 +85,13 @@ async function sendImage() {
         cardHtml.classList.remove('d-none')
     } else {
         alertHtml.classList.remove('d-none')
+    }
+}
+
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+        document.exitFullscreen();
     }
 }

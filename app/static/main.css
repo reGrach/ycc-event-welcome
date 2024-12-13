@@ -3,8 +3,10 @@ body {
     height: 100%;
 }
 
-.form-signin {
-    max-width: 330px;
+.fs-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }
 
 #canvas {
