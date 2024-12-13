@@ -80,7 +80,7 @@ async function sendImage() {
     let result = await response.json();
     if (result.success) {
         imageHtml.src = canvasHtml.toDataURL("image/jpeg");
-        nameHtml.innerText = result.result;
+        nameHtml.innerText = result.result + ', успех!';
 
         cardHtml.classList.remove('d-none')
     } else {
