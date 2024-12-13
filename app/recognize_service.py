@@ -20,17 +20,9 @@ class recognize_service:
         self.__photo_save_img = cnf.SAVE_IMG_FOLDER
 
     def __detect_box(self, self_mtcnn: MTCNN, img: Image, save_path=None):
-        batch_boxes, batch_probs, batch_points = self_mtcnn.detect(img, landmarks=True) 
-        if not self_mtcnn.keep_all:
-            batch_boxes, batch_probs, batch_points = self_mtcnn.select_boxes(
-                    batch_boxes,
-                    batch_probs,
-                    batch_points,
-                    img,
-                    method=self_mtcnn.selection_method)
-
-        faces = self_mtcnn.extract(img, batch_boxes, save_path)
-        return batch_boxes, faces
+        batch_box, batch_probs = self_mtcnn.detect(img) 
+        face = self_mtcnn.extract(img, batch_box, save_path)
+        return face
     
     ### load images
     def __loadDataset(self):
@@ -43,7 +35,9 @@ class recognize_service:
                 self.all_people_faces[person_face] = self.__encode(cropped)[0, :]
     
     def __encode(self, img):
-        res = self.resnet(torch.Tensor(img))
+        tensor_img = torch.Tensor(img)
+        tensor_img = tensor_img.unsqueeze(0)
+        res = self.resnet(tensor_img)
         return res
     
     def __savePhoto(self, img: Image, name: str):
@@ -72,7 +66,7 @@ class recognize_service:
     # Отвечает за инициализацию нейронки и загрузку имеющихся фотографий
     def start(self) -> None:
         self.resnet = InceptionResnetV1(pretrained='vggface2').eval()
-        self.mtcnn = MTCNN(image_size=224, keep_all=True, thresholds=[0.4, 0.5, 0.5], min_face_size=60)
+        self.mtcnn = MTCNN(min_face_size=80)
         self.mtcnn.detect_box = MethodType(self.__detect_box, self.mtcnn)
         self.__loadDataset()
 
@@ -81,20 +75,18 @@ class recognize_service:
         session_id = str(time.time_ns())
         self.__savePhoto(img, session_id)
 
-        batch_boxes, cropped_images = self.mtcnn.detect_box(img)
+        cropped_img = self.mtcnn.detect_box(img)
         result_name = None
-        if cropped_images is not None:
-            for box, cropped in zip(batch_boxes, cropped_images):
-                x, y, x2, y2 = [int(x) for x in box]
-                img_embedding = self.__encode(cropped.unsqueeze(0))
-                detect_dict = {}
-                for k, v in self.all_people_faces.items():
-                    detect_dict[k] = (v - img_embedding).norm().item()
+        if cropped_img is not None:
+            img_embedding = self.__encode(cropped_img)
+            detect_dict = {}
+            for k, v in self.all_people_faces.items():
+                detect_dict[k] = (v - img_embedding).norm().item()
 
-                result_name = min(detect_dict, key=detect_dict.get)
+            result_name = min(detect_dict, key=detect_dict.get)
 
-                if detect_dict[result_name] >= self.__threshold:
-                    result_name = None
+            if detect_dict[result_name] >= self.__threshold:
+                result_name = None
         if result_name is None:
             self.__writeInfo(str(datetime.now()) + '|FAIL|' + session_id)
         else:
