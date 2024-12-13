@@ -28,7 +28,7 @@ fullScreenBtnHtml.onclick = toggleFullScreen;
 
 videoHtml.addEventListener('canplay', function (ev) {
     if (!streaming) {
-        height = window.innerHeight / 2.7
+        height = window.innerHeight / 2.2
         width = videoHtml.videoWidth / (videoHtml.videoHeight / height)
 
         // В Firefox в настоящее время есть ошибка, где высота не может быть прочитана из видео, 
